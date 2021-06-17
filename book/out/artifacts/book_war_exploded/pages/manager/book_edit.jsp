@@ -1,0 +1,85 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%--<%@ page language="java" contentType="text/html; charset=UTF-8"--%>
+<%--		 pageEncoding="UTF-8"%>--%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>编辑图书</title>
+
+	<%-- 静态包含 base标签、css样式、jQuery文件 --%>
+	<%@ include file="/pages/common/head.jsp"%>
+
+
+	<style type="text/css">
+	h1 {
+		text-align: center;
+		margin-top: 200px;
+	}
+	
+	h1 a {
+		color:red;
+	}
+	
+	input {
+		text-align: center;
+	}
+</style>
+</head>
+<body>
+
+		<div id="header">
+			<img class="logo_img" alt="" src="../../static/img/logo.gif" >
+			<span class="wel_word">编辑图书</span>
+
+			<%-- 静态包含 manager管理模块的菜单  --%>
+			<%@include file="/pages/common/manager_menu.jsp"%>
+
+
+		</div>
+		
+		<div id="main">
+<%--			${requestScope.flag}--%>
+				<form action="http://localhost:8080/book/uploadServlet" method="post" enctype="multipart/form-data">
+			<c:if test="${requestScope.flag!=1}">
+<%--				${requestScope.flag != 1}--%>
+					上传图片:<input type="file" name="imgPath"> <br>
+					<input type="submit" value="上传">
+			</c:if>
+				</form>
+
+				<%
+					String imgPath = (String) request.getAttribute("imgPath");
+				%>
+				<img src="${imgPath}">
+<%--		这里原来是get 中文会乱码 改为post就对了--%>
+			<form action="manager/bookServlet" method="post">
+				<input type="hidden" name="pageNo" value="${param.pageNo}">
+				<input type="hidden" name="action" value="${ empty param.id ? "add" : "update" }" />
+				<input type="hidden" name="id" value="${ requestScope.book.id }" />
+				<table>
+					<tr>
+						<td>名称</td>
+						<td>价格</td>
+						<td>作者</td>
+						<td>销量</td>
+						<td>库存</td>
+						<td colspan="2">操作</td>
+					</tr>		
+					<tr>
+						<td><input name="name" type="text" value="${requestScope.book.name}"/></td>
+						<td><input name="price" type="text" value="${requestScope.book.price}"/></td>
+						<td><input name="author" type="text" value="${requestScope.book.author}"/></td>
+						<td><input name="sales" type="text" value="${requestScope.book.sales}"/></td>
+						<td><input name="stock" type="text" value="${requestScope.book.stock}"/></td>
+						<td><input type="hidden" name="imgPath" type="file" value="<%=imgPath%>" /></td>
+						<td><input type="submit" value="提交"/></td>
+					</tr>	
+				</table>
+			</form>
+		</div>
+		<%--静态包含页脚内容--%>
+		<%@include file="/pages/common/footer.jsp"%>
+</body>
+</html>
